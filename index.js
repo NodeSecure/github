@@ -1,6 +1,6 @@
 // Require Node.js Dependencies
 const { promisify } = require("util");
-const { createWriteStream, promises: { unlink } } = require("fs");
+const { createWriteStream, promises: { unlink, realpath } } = require("fs");
 const { join, parse } = require("path");
 const stream = require("stream");
 
@@ -43,14 +43,13 @@ async function download(repository, options = Object.create(null)) {
     const [org, repo] = repository.split(".");
     const gitUrl = new URL(`${org}/${repo}/archive/${branch}.zip`, GITHUB_URL);
 
-    const fileDestination = join(dest, `${org}-${repo}.${branch}.zip`);
+    const fileDestination = join(dest, `${repo}-${branch}.zip`);
     await pipeline(
         got.stream(gitUrl.href),
         createWriteStream(fileDestination)
     );
 
     if (extract) {
-        console.log(fileDestination);
         await extractAsync(fileDestination, {
             dir: dest
         });

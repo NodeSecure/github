@@ -33,7 +33,7 @@ ava("download public repository (without extraction)", async(assert) => {
     const file = await download("SlimIO.Config", {
         dest: __dirname
     });
-    assert.is(file, join(__dirname, "SlimIO-Config.master.zip"));
+    assert.is(file, join(__dirname, "Config-master.zip"));
     await access(file);
     await unlink(file);
 });
@@ -43,12 +43,12 @@ ava("download public repository (with extraction)", async(assert) => {
         dest: __dirname,
         extract: true
     });
-    assert.is(dir, join(__dirname, "SlimIO-is.master"));
+    assert.is(dir, join(__dirname, "is-master"));
     const st = await stat(dir);
     assert.true(st.isDirectory());
 
     try {
-        await access(join(__dirname, "SlimIO-is.master.zip"));
+        await access(join(__dirname, "is-master.zip"));
     }
     catch (err) {
         assert.pass();
