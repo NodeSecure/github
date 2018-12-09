@@ -1,5 +1,5 @@
 {
-    "name": "@slimio/github-download",
+    "name": "@slimio/github",
     "version": "0.1.0",
     "description": "Download repository from github",
     "main": "index.js",
@@ -49,6 +49,7 @@
     },
     "husky": {
         "hooks": {
+            "pre-push": "npm test",
             "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
         }
     },

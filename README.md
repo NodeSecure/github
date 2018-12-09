@@ -1,4 +1,4 @@
-# github-download
+# github
 Download repository from github
 
 ## Getting Started
@@ -6,14 +6,14 @@ Download repository from github
 This package is available in the Node Package Repository and can be easily installed with [npm](https://docs.npmjs.com/getting-started/what-is-npm) or [yarn](https://yarnpkg.com).
 
 ```bash
-$ npm i @slimio/github-download
+$ npm i @slimio/github
 # or
-$ yarn add @slimio/github-download
+$ yarn add @slimio/github
 ```
 
 ## Usage example
 ```js
-const download = require("@slimio/github-download");
+const download = require("@slimio/github");
 
 async function main() {
     const projectZip = await download("SlimIO.is");
