@@ -43,6 +43,13 @@ ava("download public repository (without extraction)", async(assert) => {
     await unlink(file);
 });
 
+ava("download public repository (at current working dir)", async(assert) => {
+    const file = await download("SlimIO.Config");
+    assert.is(file, join(process.cwd(), "Config-master.zip"));
+    await access(file);
+    await unlink(file);
+});
+
 ava("download private repository (without extraction)", async(assert) => {
     const file = await download("SlimIO.Core", {
         dest: __dirname,

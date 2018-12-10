@@ -49,6 +49,3 @@ GIT_PASSWORD=
 
 ## License
 MIT
-
-## Roadmap
-- Complete test coverage
