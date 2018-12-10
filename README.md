@@ -37,6 +37,7 @@ Repository should be formatted like that:
 ```
 
 Available options:
+
 | name | type | default | description |
 | --- | --- | --- | --- |
 | branch | string | master | Git branch to download |
