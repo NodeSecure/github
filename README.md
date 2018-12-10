@@ -41,8 +41,8 @@ Available options:
 | --- | --- | --- | --- |
 | branch | string | master | Git branch to download |
 | dest | string | `process.cwd()` | Zip/Directory destination |
-| extract | boolean | false | Extract .zip file |
-| auth | string | void | Basic Authentication for private repository |
+| extract | boolean | `false` | Extract .zip file |
+| auth | string | `undefined` | Basic Authentication for private repository |
 
 ## Env
 To be able to work on the project, please create a root `.env` file with these:
