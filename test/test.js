@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 // Require Node.js Dependencies
 const { join } = require("path");
 const { unlink, access, stat } = require("fs").promises;
@@ -9,6 +11,9 @@ const rimraf = require("rimraf");
 
 // Require Internal Dependencies
 const download = require("../index");
+
+// CONSTANTS
+const GIT_AUTH = `${process.env.GIT_USERNAME}:${process.env.GIT_PASSWORD}`;
 
 ava("export should be an asyncFunction", (assert) => {
     assert.true(is.func(download));
@@ -34,6 +39,16 @@ ava("download public repository (without extraction)", async(assert) => {
         dest: __dirname
     });
     assert.is(file, join(__dirname, "Config-master.zip"));
+    await access(file);
+    await unlink(file);
+});
+
+ava("download private repository (without extraction)", async(assert) => {
+    const file = await download("SlimIO.Core", {
+        dest: __dirname,
+        auth: GIT_AUTH
+    });
+    assert.is(file, join(__dirname, "Core-master.zip"));
     await access(file);
     await unlink(file);
 });

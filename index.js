@@ -24,6 +24,7 @@ const extractAsync = promisify(extractZip);
  * @param {String} [options.branch=master] branch to download
  * @param {String} [options.dest] destination to transfert file
  * @param {Boolean} [options.extract] Enable .zip extraction!
+ * @param {String} [options.auth] auth for private repository
  * @returns {Promise<String>}
  *
  * @throws {TypeError}
@@ -37,18 +38,20 @@ async function download(repository, options = Object.create(null)) {
     }
 
     // Retrieve options
-    const { branch = "master", dest = process.cwd(), extract = false } = options;
+    const { branch = "master", dest = process.cwd(), extract = false, auth } = options;
 
     // Create URL!
     const [org, repo] = repository.split(".");
     const gitUrl = new URL(`${org}/${repo}/archive/${branch}.zip`, GITHUB_URL);
-
     const fileDestination = join(dest, `${repo}-${branch}.zip`);
+
+    // Download and write on disk
     await pipeline(
-        got.stream(gitUrl.href),
+        got.stream(gitUrl.href, { auth }),
         createWriteStream(fileDestination)
     );
 
+    // Extract .zip archive
     if (extract) {
         await extractAsync(fileDestination, {
             dir: dest

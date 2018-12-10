@@ -3,6 +3,7 @@ declare namespace Download {
         dest?: string;
         branch?: string;
         extract?: boolean;
+        auth?: string;
     }
 }
 
