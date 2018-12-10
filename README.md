@@ -1,4 +1,8 @@
-# github
+# Github API
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/SlimIO/github/commit-activity)
+![MIT](https://img.shields.io/github/license/mashape/apistatus.svg)
+![V1.0](https://img.shields.io/badge/version-0.2.0-blue.svg)
+
 Download repository from github.
 
 ## Getting Started
