@@ -19,6 +19,7 @@ const deleteAll = promisify(rimraf);
 
 // Clean up all files after execution!
 ava.after(async(assert) => {
+    await new Promise((resolve) => setTimeout(resolve, 50));
     const files = await readdir(__dirname);
     for (const file of files) {
         if (file === "test.js") {
