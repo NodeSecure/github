@@ -28,8 +28,8 @@
     "homepage": "https://github.com/SlimIO/github-download#readme",
     "dependencies": {
         "@slimio/is": "^1.4.0",
-        "extract-zip": "^1.6.7",
-        "got": "^9.5.0"
+        "got": "^9.5.0",
+        "tar-fs": "^1.16.3"
     },
     "devDependencies": {
         "@commitlint/cli": "^7.2.1",

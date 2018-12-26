@@ -1,12 +1,13 @@
 // Require Node.js Dependencies
 const { promisify } = require("util");
-const { createWriteStream, promises: { unlink, realpath } } = require("fs");
-const { join, parse } = require("path");
+const { createWriteStream, createReadStream, promises: { unlink } } = require("fs");
+const { join } = require("path");
+const { createGunzip } = require("zlib");
 const stream = require("stream");
 
 // Require Third-party Dependencies
 const got = require("got");
-const extractZip = require("extract-zip");
+const tar = require("tar-fs");
 const is = require("@slimio/is");
 
 // CONSTANTS
@@ -14,7 +15,6 @@ const GITHUB_URL = new URL("https://github.com/");
 
 // ASYNC
 const pipeline = promisify(stream.pipeline);
-const extractAsync = promisify(extractZip);
 
 /**
  * @async
@@ -42,8 +42,8 @@ async function download(repository, options = Object.create(null)) {
 
     // Create URL!
     const [org, repo] = repository.split(".");
-    const gitUrl = new URL(`${org}/${repo}/archive/${branch}.zip`, GITHUB_URL);
-    const fileDestination = join(dest, `${repo}-${branch}.zip`);
+    const gitUrl = new URL(`${org}/${repo}/archive/${branch}.tar.gz`, GITHUB_URL);
+    const fileDestination = join(dest, `${repo}-${branch}.tar.gz`);
 
     // Download and write on disk
     await pipeline(
@@ -51,15 +51,16 @@ async function download(repository, options = Object.create(null)) {
         createWriteStream(fileDestination)
     );
 
-    // Extract .zip archive
+    // // Extract .tar.gz archive
     if (extract) {
-        await extractAsync(fileDestination, {
-            dir: dest
-        });
+        await pipeline(
+            createReadStream(fileDestination),
+            createGunzip(),
+            tar.extract(dest)
+        );
         await unlink(fileDestination);
-        const dirParse = parse(fileDestination);
 
-        return join(dirParse.dir, dirParse.name);
+        return join(dest, `${repo}-${branch}`);
     }
 
     return fileDestination;
