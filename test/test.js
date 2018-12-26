@@ -97,14 +97,4 @@ ava("download public repository (with extraction)", async(assert) => {
     catch (err) {
         assert.pass();
     }
-
-    await new Promise((resolve, reject) => {
-        rimraf(dir, (error) => {
-            if (error) {
-                return reject(error);
-            }
-
-            return resolve();
-        });
-    });
 });
