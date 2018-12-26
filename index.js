@@ -47,7 +47,7 @@ async function download(repository, options = Object.create(null)) {
 
     // Download and write on disk
     await pipeline(
-        got.stream(gitUrl.href, { auth }),
+        got.stream(gitUrl.href, { auth, timeout: 2000 }),
         createWriteStream(fileDestination)
     );
 
