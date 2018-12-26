@@ -29,7 +29,7 @@ main().catch(console.error);
 ## API
 
 ### download(repo: String, options?): Promise< String >
-Download a given "public" repository ! Return the name of the .zip file (or the name of the extracted directory).
+Download a given "public" repository ! Return the name of the .tar.gz file (or the name of the extracted directory).
 
 Repository should be formatted like that:
 ```
@@ -41,8 +41,8 @@ Available options:
 | name | type | default | description |
 | --- | --- | --- | --- |
 | branch | string | master | Git branch to download |
-| dest | string | `process.cwd()` | Zip/Directory destination |
-| extract | boolean | `false` | Extract .zip file |
+| dest | string | `process.cwd()` | Tar/Directory destination |
+| extract | boolean | `false` | Extract .tar.gz file |
 | auth | string | `undefined` | Basic Authentication for private repository |
 
 ## Env
