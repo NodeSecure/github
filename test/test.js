@@ -1,8 +1,9 @@
 require("dotenv").config();
 
 // Require Node.js Dependencies
+const { promisify } = require("util");
 const { join } = require("path");
-const { unlink, access, stat } = require("fs").promises;
+const { unlink, access, stat, readdir } = require("fs").promises;
 
 // Require Third-party Dependencies
 const ava = require("ava");
@@ -14,6 +15,26 @@ const download = require("../index");
 
 // CONSTANTS
 const GIT_AUTH = `${process.env.GIT_USERNAME}:${process.env.GIT_PASSWORD}`;
+const deleteAll = promisify(rimraf);
+
+// Clean up all files after execution!
+ava.after(async(assert) => {
+    const files = await readdir(__dirname);
+    for (const file of files) {
+        if (file === "test.js") {
+            continue;
+        }
+
+        const fPath = join(__dirname, file);
+        const st = await stat(fPath);
+        if (st.isDirectory()) {
+            await deleteAll(fPath);
+        }
+        else {
+            await unlink(fPath);
+        }
+    }
+});
 
 ava("export should be an asyncFunction", (assert) => {
     assert.true(is.func(download));
