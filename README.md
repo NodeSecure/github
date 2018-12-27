@@ -3,7 +3,7 @@
 ![MIT](https://img.shields.io/github/license/mashape/apistatus.svg)
 ![V1.0](https://img.shields.io/badge/version-0.3.0-blue.svg)
 
-Download repository from github.
+Download and (optionaly) extract github repository archive.
 
 ## Getting Started
 
@@ -20,8 +20,8 @@ $ yarn add @slimio/github
 const download = require("@slimio/github");
 
 async function main() {
-    const projectZip = await download("SlimIO.is");
-    console.log(projectZip);
+    const tarGZPath = await download("SlimIO.is");
+    console.log(tarGZPath);
 }
 main().catch(console.error);
 ```
@@ -36,7 +36,7 @@ Repository should be formatted like that:
 (org|username).repository_fullname
 ```
 
-Available options:
+Available options are:
 
 | name | type | default | description |
 | --- | --- | --- | --- |
