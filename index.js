@@ -24,6 +24,7 @@ const pipeline = promisify(stream.pipeline);
  * @param {String} [options.branch=master] branch to download
  * @param {String} [options.dest] destination to transfert file
  * @param {Boolean} [options.extract] Enable .zip extraction!
+ * @param {Boolean} [options.unlink] Unlink tar.gz file on extraction
  * @param {String} [options.auth] auth for private repository
  * @returns {Promise<String>}
  *
@@ -38,7 +39,7 @@ async function download(repository, options = Object.create(null)) {
     }
 
     // Retrieve options
-    const { branch = "master", dest = process.cwd(), extract = false, auth } = options;
+    const { branch = "master", dest = process.cwd(), extract = false, unlink: ulk = true, auth } = options;
 
     // Create URL!
     const [org, repo] = repository.split(".");
@@ -58,7 +59,9 @@ async function download(repository, options = Object.create(null)) {
             createGunzip(),
             tar.extract(dest)
         );
-        await unlink(fileDestination);
+        if (ulk) {
+            await unlink(fileDestination);
+        }
 
         return join(dest, `${repo}-${branch}`);
     }

@@ -43,6 +43,7 @@ Available options are:
 | branch | string | master | Git branch to download |
 | dest | string | `process.cwd()` | Tar/Directory destination |
 | extract | boolean | `false` | Extract .tar.gz file |
+| unlink | boolean | `true` | Remove .tar.gz file on extraction |
 | auth | string | `undefined` | Basic Authentication for private repository |
 
 ## Env
