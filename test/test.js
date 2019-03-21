@@ -102,12 +102,12 @@ ava("download public repository (with extraction)", async(assert) => {
 
 ava("download public repository (with extraction and unlink disabled)", async(assert) => {
     assert.plan(2);
-    const dir = await download("SlimIO.safeEmitter", {
+    const dir = await download("SlimIO.Safe-emitter", {
         dest: __dirname,
         unlink: false,
         extract: true
     });
-    await access(join(__dirname, "safeEmitter-master.tar.gz"));
-    assert.is(dir, join(__dirname, "safeEmitter-master"));
+    await access(join(__dirname, "Safe-emitter-master.tar.gz"));
+    assert.is(dir, join(__dirname, "Safe-emitter-master"));
     assert.true((await stat(dir)).isDirectory());
 });
