@@ -60,3 +60,4 @@ typings/
 # JSDoc
 docs/
 temp/
+.vscode/
