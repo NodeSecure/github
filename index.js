@@ -4,9 +4,9 @@ const { createWriteStream, createReadStream, promises: { unlink } } = require("f
 const { join } = require("path");
 const { createGunzip } = require("zlib");
 const stream = require("stream");
+const https = require("follow-redirects").https;
 
 // Require Third-party Dependencies
-const got = require("got");
 const tar = require("tar-fs");
 const is = require("@slimio/is");
 
@@ -46,11 +46,21 @@ async function download(repository, options = Object.create(null)) {
     const gitUrl = new URL(`${org}/${repo}/archive/${branch}.tar.gz`, GITHUB_URL);
     const fileDestination = join(dest, `${repo}-${branch}.tar.gz`);
 
-    // Download and write on disk
-    await pipeline(
-        got.stream(gitUrl.href, { auth, timeout: 2000 }),
-        createWriteStream(fileDestination)
-    );
+    await new Promise((resolve, reject) => {
+        const headers = {
+            "Accept-Encoding": "gzip, deflate"
+        };
+        const options = { headers, timeout: 5000 };
+        if (typeof auth === "string") {
+            headers.Authorization = `Basic ${Buffer.from(auth).toString("base64")}`;
+        }
+
+        https.get(gitUrl.href, options, (res) => {
+            res.pipe(createWriteStream(fileDestination));
+            res.once("error", reject);
+            res.once("end", resolve);
+        });
+    });
 
     // // Extract .tar.gz archive
     if (extract) {
