@@ -1,6 +1,6 @@
 {
     "name": "@slimio/github",
-    "version": "0.3.1",
+    "version": "0.4.0",
     "description": "Download repository from github",
     "main": "index.js",
     "scripts": {
