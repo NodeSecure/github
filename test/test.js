@@ -18,7 +18,7 @@ const GIT_AUTH = `${process.env.GIT_USERNAME}:${process.env.GIT_PASSWORD}`;
 const deleteAll = promisify(rimraf);
 
 // Clean up all files after execution!
-ava.after(async(assert) => {
+ava.after.always(async(assert) => {
     await new Promise((resolve) => setTimeout(resolve, 50));
     const files = await readdir(__dirname);
     for (const file of files) {
@@ -80,6 +80,15 @@ ava("download private repository (without extraction)", async(assert) => {
     assert.is(file, join(__dirname, "Core-master.tar.gz"));
     await access(file);
     await unlink(file);
+});
+
+ava("download false repository", async(assert) => {
+    await assert.throwsAsync(download("SlimIO.test", {
+        dest: __dirname
+    }), {
+        instanceOf: Error,
+        message: "Not Found"
+    });
 });
 
 ava("download public repository (with extraction)", async(assert) => {

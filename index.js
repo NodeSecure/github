@@ -56,6 +56,9 @@ async function download(repository, options = Object.create(null)) {
         }
 
         https.get(gitUrl.href, options, (res) => {
+            if (res.statusCode === 404) {
+                reject(Error(res.statusMessage));
+            }
             res.pipe(createWriteStream(fileDestination));
             res.once("error", reject);
             res.once("end", resolve);
