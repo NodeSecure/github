@@ -92,7 +92,6 @@ ava("download false repository", async(assert) => {
         await access(join(__dirname, "test-master.tar.gz"));
     }
     catch (err) {
-        console.log(err);
         assert.pass();
     }
 });
