@@ -59,9 +59,11 @@ async function download(repository, options = Object.create(null)) {
             if (res.statusCode === 404) {
                 reject(Error(res.statusMessage));
             }
-            res.pipe(createWriteStream(fileDestination));
-            res.once("error", reject);
-            res.once("end", resolve);
+            else {
+                res.pipe(createWriteStream(fileDestination));
+                res.once("error", reject);
+                res.once("end", resolve);
+            }
         });
     });
 

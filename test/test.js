@@ -83,12 +83,18 @@ ava("download private repository (without extraction)", async(assert) => {
 });
 
 ava("download false repository", async(assert) => {
+    assert.plan(2);
     await assert.throwsAsync(download("SlimIO.test", {
         dest: __dirname
-    }), {
-        instanceOf: Error,
-        message: "Not Found"
-    });
+    }), { instanceOf: Error, message: "Not Found" });
+
+    try {
+        await access(join(__dirname, "test-master.tar.gz"));
+    }
+    catch (err) {
+        console.log(err);
+        assert.pass();
+    }
 });
 
 ava("download public repository (with extraction)", async(assert) => {
