@@ -1,9 +1,13 @@
 # Github API
+
+![version](https://img.shields.io/badge/dynamic/json.svg?url=https://raw.githubusercontent.com/SlimIO/github/master/package.json&query=$.version&label=Version)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/SlimIO/github/commit-activity)
 ![MIT](https://img.shields.io/github/license/mashape/apistatus.svg)
-![V1.0](https://img.shields.io/badge/version-0.3.0-blue.svg)
 
 Download and (optionaly) extract github repository archive.
+
+## Requirements
+- Node.js v10 or higher
 
 ## Getting Started
 
