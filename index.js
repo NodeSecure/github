@@ -4,7 +4,7 @@ const { createWriteStream, createReadStream, promises: { unlink } } = require("f
 const { join } = require("path");
 const { createGunzip } = require("zlib");
 const stream = require("stream");
-const https = require("follow-redirects").https;
+const { https } = require("follow-redirects");
 
 // Require Third-party Dependencies
 const tar = require("tar-fs");
