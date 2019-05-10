@@ -55,8 +55,7 @@ Available options are:
 ## Env
 To be able to work on the project, please create a root `.env` file with these:
 ```
-GIT_USERNAME=
-GIT_PASSWORD=
+GIT_TOKEN=token_here
 ```
 
 ## License

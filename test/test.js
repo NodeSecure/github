@@ -14,7 +14,6 @@ const rimraf = require("rimraf");
 const download = require("../index");
 
 // CONSTANTS
-const GIT_AUTH = `${process.env.GIT_USERNAME}:${process.env.GIT_PASSWORD}`;
 const deleteAll = promisify(rimraf);
 
 // Clean up all files after execution!
@@ -75,7 +74,7 @@ ava("download public repository (at current working dir)", async(assert) => {
 ava("download private repository (without extraction)", async(assert) => {
     const file = await download("SlimIO.Core", {
         dest: __dirname,
-        auth: GIT_AUTH
+        auth: process.env.GIT_TOKEN
     });
     assert.is(file, join(__dirname, "Core-master.tar.gz"));
     await access(file);

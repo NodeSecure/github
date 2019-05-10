@@ -48,11 +48,12 @@ async function download(repository, options = Object.create(null)) {
 
     await new Promise((resolve, reject) => {
         const headers = {
+            "User-Agent": "SlimIO",
             "Accept-Encoding": "gzip, deflate"
         };
         const options = { headers, timeout: 5000 };
         if (typeof auth === "string") {
-            headers.Authorization = `Basic ${Buffer.from(auth).toString("base64")}`;
+            headers.Authorization = `token ${auth}`;
         }
 
         https.get(gitUrl.href, options, (res) => {
