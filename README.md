@@ -4,6 +4,8 @@
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/SlimIO/github/commit-activity)
 ![MIT](https://img.shields.io/github/license/mashape/apistatus.svg)
 ![dep](https://img.shields.io/david/SlimIO/github.svg)
+![size](https://img.shields.io/bundlephobia/min/@slimio/github.svg)
+[![Known Vulnerabilities](https://snyk.io/test/github/SlimIO/github/badge.svg?targetFile=package.json)](https://snyk.io/test/github/SlimIO/github?targetFile=package.json)
 [![Build Status](https://travis-ci.com/SlimIO/github.svg?branch=master)](https://travis-ci.com/SlimIO/github)
 
 Download and (optionaly) extract github repository archive.
