@@ -58,5 +58,13 @@ To be able to work on the project, please create a root `.env` file with these:
 GIT_TOKEN=token_here
 ```
 
+## Dependencies
+
+|Name|Refactoring|Security Risk|Usage|
+|---|---|---|---|
+|[@slimio/is](https://github.com/SlimIO/is#readme)|Minor|Low|TBC|
+|[follow-redirects](https://github.com/follow-redirects/follow-redirects)|Minor|Low|TBC|
+|[tar-fs](https://github.com/mafintosh/tar-fs)|⚠️Major|High|TBC|
+
 ## License
 MIT
