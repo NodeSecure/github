@@ -1,3 +1,5 @@
+"use strict";
+
 // Require Node.js Dependencies
 const { promisify } = require("util");
 const { createWriteStream, createReadStream, promises: { unlink } } = require("fs");
@@ -18,15 +20,15 @@ const pipeline = promisify(stream.pipeline);
 
 /**
  * @async
- * @func download
+ * @function download
  * @param {*} repository repository
  * @param {*} options options
- * @param {String} [options.branch=master] branch to download
- * @param {String} [options.dest] destination to transfert file
- * @param {Boolean} [options.extract] Enable .zip extraction!
- * @param {Boolean} [options.unlink] Unlink tar.gz file on extraction
- * @param {String} [options.auth] auth for private repository
- * @returns {Promise<String>}
+ * @param {string} [options.branch=master] branch to download
+ * @param {string} [options.dest] destination to transfert file
+ * @param {boolean} [options.extract] Enable .zip extraction!
+ * @param {boolean} [options.unlink] Unlink tar.gz file on extraction
+ * @param {string} [options.auth] auth for private repository
+ * @returns {Promise<string>}
  *
  * @throws {TypeError}
  */
