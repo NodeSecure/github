@@ -11,7 +11,7 @@
 Download and (optionaly) extract github repository archive.
 
 ## Requirements
-- Node.js v10 or higher
+- [Node.js](https://nodejs.org/en/) v10 or higher
 
 ## Getting Started
 
@@ -64,9 +64,9 @@ GIT_TOKEN=token_here
 
 |Name|Refactoring|Security Risk|Usage|
 |---|---|---|---|
-|[@slimio/is](https://github.com/SlimIO/is#readme)|Minor|Low|TBC|
-|[follow-redirects](https://github.com/follow-redirects/follow-redirects)|Minor|Low|TBC|
-|[tar-fs](https://github.com/mafintosh/tar-fs)|⚠️Major|High|TBC|
+|[@slimio/is](https://github.com/SlimIO/is#readme)|Minor|Low|Type Checker|
+|[follow-redirects](https://github.com/follow-redirects/follow-redirects)|Minor|Low|HTTP Request with URL redirection support|
+|[tar-fs](https://github.com/mafintosh/tar-fs)|⚠️Major|High|Extract tar archive|
 
 ## License
 MIT
