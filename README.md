@@ -6,7 +6,8 @@
 ![dep](https://img.shields.io/david/SlimIO/github.svg)
 ![size](https://img.shields.io/bundlephobia/min/@slimio/github.svg)
 [![Known Vulnerabilities](https://snyk.io/test/github/SlimIO/github/badge.svg?targetFile=package.json)](https://snyk.io/test/github/SlimIO/github?targetFile=package.json)
-[![Build Status](https://travis-ci.com/SlimIO/github.svg?branch=master)](https://travis-ci.com/SlimIO/github) [![Greenkeeper badge](https://badges.greenkeeper.io/SlimIO/github.svg)](https://greenkeeper.io/)
+[![Build Status](https://travis-ci.com/SlimIO/github.svg?branch=master)](https://travis-ci.com/SlimIO/github)
+[![Greenkeeper badge](https://badges.greenkeeper.io/SlimIO/github.svg)](https://greenkeeper.io/)
 
 Download and (optionaly) extract github repository archive.
 
