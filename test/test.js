@@ -3,20 +3,15 @@
 require("dotenv").config();
 
 // Require Node.js Dependencies
-const { promisify } = require("util");
 const { join } = require("path");
-const { unlink, access, stat, readdir } = require("fs").promises;
+const { unlink, access, stat, readdir, rmdir } = require("fs").promises;
 
 // Require Third-party Dependencies
 const ava = require("ava");
 const is = require("@slimio/is");
-const rimraf = require("rimraf");
 
 // Require Internal Dependencies
 const download = require("../index");
-
-// CONSTANTS
-const deleteAll = promisify(rimraf);
 
 // Clean up all files after execution!
 ava.after.always(async(assert) => {
@@ -30,7 +25,7 @@ ava.after.always(async(assert) => {
         const fPath = join(__dirname, file);
         const st = await stat(fPath);
         if (st.isDirectory()) {
-            await deleteAll(fPath);
+            await rmdir(fPath, { recursive: true });
         }
         else {
             await unlink(fPath);
