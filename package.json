@@ -52,7 +52,7 @@
         "rimraf": "^2.6.3"
     },
     "engines": {
-        "node": ">=10"
+        "node": ">=12"
     },
     "husky": {
         "hooks": {
