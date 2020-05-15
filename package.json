@@ -32,7 +32,7 @@
     "homepage": "https://github.com/SlimIO/github-download#readme",
     "dependencies": {
         "@slimio/is": "^1.5.0",
-        "follow-redirects": "^1.9.0",
+        "follow-redirects": "^1.11.0",
         "tar-fs": "^2.0.0"
     },
     "devDependencies": {
