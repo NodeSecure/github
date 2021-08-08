@@ -31,8 +31,8 @@
     },
     "homepage": "https://github.com/SlimIO/github-download#readme",
     "dependencies": {
+        "@myunisoft/httpie": "^1.0.0",
         "@slimio/is": "^1.5.0",
-        "follow-redirects": "^1.14.1",
         "tar-fs": "^2.1.1"
     },
     "devDependencies": {

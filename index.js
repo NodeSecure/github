@@ -6,11 +6,11 @@ const { createWriteStream, createReadStream, promises: { unlink } } = require("f
 const { join } = require("path");
 const { createGunzip } = require("zlib");
 const stream = require("stream");
-const { https } = require("follow-redirects");
 
 // Require Third-party Dependencies
 const tar = require("tar-fs");
 const is = require("@slimio/is");
+const httpie = require("@myunisoft/httpie");
 
 // CONSTANTS
 const GITHUB_URL = new URL("https://github.com/");
@@ -48,29 +48,16 @@ async function download(repository, options = Object.create(null)) {
     const gitUrl = new URL(`${org}/${repo}/archive/${branch}.tar.gz`, GITHUB_URL);
     const fileDestination = join(dest, `${repo}-${branch}.tar.gz`);
 
-    await new Promise((resolve, reject) => {
-        const headers = {
+    await httpie.stream("GET", gitUrl, {
+        headers: {
             "User-Agent": "SlimIO",
-            "Accept-Encoding": "gzip, deflate"
-        };
-        const options = { headers, timeout: 5000 };
-        if (typeof auth === "string") {
-            headers.Authorization = `token ${auth}`;
-        }
+            "Accept-Encoding": "gzip, deflate",
+            Authorization: typeof auth === "string" ? `token ${auth}` : void 0
+        },
+        maxRedirections: 10
+    })(createWriteStream(fileDestination));
 
-        https.get(gitUrl.href, options, (res) => {
-            if (res.statusCode === 404) {
-                reject(Error(res.statusMessage));
-            }
-            else {
-                res.pipe(createWriteStream(fileDestination));
-                res.once("error", reject);
-                res.once("end", resolve);
-            }
-        });
-    });
-
-    // // Extract .tar.gz archive
+    // Extract .tar.gz archive
     if (extract) {
         await pipeline(
             createReadStream(fileDestination),
