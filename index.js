@@ -45,10 +45,10 @@ async function download(repository, options = Object.create(null)) {
 
     // Create URL!
     const [org, repo] = repository.split(".");
-    const gitUrl = new URL(`${org}/${repo}/archive/${branch}.tar.gz`, GITHUB_URL);
+    const repositoryURL = new URL(`${org}/${repo}/archive/${branch}.tar.gz`, GITHUB_URL);
     const fileDestination = join(dest, `${repo}-${branch}.tar.gz`);
 
-    await httpie.stream("GET", gitUrl, {
+    await httpie.stream("GET", repositoryURL, {
         headers: {
             "User-Agent": "SlimIO",
             "Accept-Encoding": "gzip, deflate",
