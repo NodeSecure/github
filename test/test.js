@@ -1,123 +1,156 @@
-"use strict";
+import dotenv from "dotenv";
+dotenv.config();
 
-require("dotenv").config();
+// Import Node.js Dependencies
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
+import fs from "fs/promises";
 
-// Require Node.js Dependencies
-const { join } = require("path");
-const { unlink, access, stat, readdir, rmdir } = require("fs").promises;
+// Import Third-party Dependencies
+import test from "tape";
+import is from "@slimio/is";
 
-// Require Third-party Dependencies
-const ava = require("ava");
-const is = require("@slimio/is");
+// Import Internal Dependencies
+import { download } from "../index.js";
 
-// Require Internal Dependencies
-const download = require("../index");
+// CONSTANTS
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// Clean up all files after execution!
-ava.after.always(async(assert) => {
-    await new Promise((resolve) => setTimeout(resolve, 50));
-    const files = await readdir(__dirname);
-    for (const file of files) {
-        if (file === "test.js") {
-            continue;
-        }
+test("export should be an asyncFunction", (tape) => {
+  tape.true(is.func(download));
+  tape.true(is.asyncFunction(download));
 
-        const fPath = join(__dirname, file);
-        const st = await stat(fPath);
-        if (st.isDirectory()) {
-            await rmdir(fPath, { recursive: true });
-        }
-        else {
-            await unlink(fPath);
-        }
+  tape.end();
+});
+
+test("download must throw: repository must be a string!", async(tape) => {
+  tape.plan(2);
+
+  try {
+    await download(10);
+  }
+  catch (error) {
+    tape.strictEqual(error.name, "TypeError");
+    tape.strictEqual(error.message, "repository must be a string!");
+  }
+
+  tape.end();
+});
+
+test("download public repository (without extraction)", async(tape) => {
+  const file = await download("SlimIO.Config", {
+    dest: __dirname
+  });
+  tape.is(file, join(__dirname, "Config-master.tar.gz"));
+
+  await fs.access(file);
+  await fs.unlink(file);
+
+  tape.end();
+});
+
+test("download public repository (at current working dir)", async(tape) => {
+  const file = await download("SlimIO.Config");
+  tape.is(file, join(process.cwd(), "Config-master.tar.gz"));
+
+  await fs.access(file);
+  await fs.unlink(file);
+
+  tape.end();
+});
+
+test("download private repository (without extraction)", async(tape) => {
+  const file = await download("SlimIO.Core", {
+    dest: __dirname,
+    auth: process.env.GIT_TOKEN
+  });
+  tape.is(file, join(__dirname, "Core-master.tar.gz"));
+
+  await fs.access(file);
+  await fs.unlink(file);
+
+  tape.end();
+});
+
+test("download false repository", async(tape) => {
+  tape.plan(2);
+
+  try {
+    await download("SlimIO.test", {
+      dest: __dirname
+    });
+  }
+  catch (err) {
+    console.log(err);
+
+    tape.pass();
+  }
+
+  try {
+    await fs.access(join(__dirname, "test-master.tar.gz"));
+  }
+  catch (err) {
+    console.log(err);
+
+    tape.pass();
+  }
+
+  tape.end();
+});
+
+test("download public repository (with extraction)", async(tape) => {
+  tape.plan(3);
+
+  const dir = await download("SlimIO.is", {
+    dest: __dirname,
+    extract: true
+  });
+  tape.is(dir, join(__dirname, "is-master"));
+
+  const st = await fs.stat(dir);
+  tape.true(st.isDirectory());
+
+  try {
+    await fs.access(join(__dirname, "is-master.tar.gz"));
+  }
+  catch {
+    tape.pass();
+  }
+
+  tape.end();
+});
+
+test("download public repository (with extraction and unlink disabled)", async(tape) => {
+  tape.plan(2);
+
+  const dir = await download("SlimIO.Safe-emitter", {
+    dest: __dirname,
+    unlink: false,
+    extract: true
+  });
+
+  await fs.access(join(__dirname, "Safe-emitter-master.tar.gz"));
+  tape.is(dir, join(__dirname, "Safe-emitter-master"));
+  tape.true((await fs.stat(dir)).isDirectory());
+
+  tape.end();
+});
+
+test("teardown", async() => {
+  await new Promise((resolve) => setTimeout(resolve, 50));
+
+  const dirents = await fs.readdir(__dirname, { withFileTypes: true });
+  for (const dirent of dirents) {
+    if (dirent.name === "test.js") {
+      continue;
     }
-});
 
-ava("export should be an asyncFunction", (assert) => {
-    assert.true(is.func(download));
-    assert.true(is.asyncFunction(download));
-});
-
-ava("download must throw: repository must be a string!", async(assert) => {
-    await assert.throwsAsync(download(10), {
-        instanceOf: TypeError,
-        message: "repository must be a string!"
-    });
-});
-
-ava("download must throw: options must be a plain javascript object!", async(assert) => {
-    await assert.throwsAsync(download("SlimIO.Core", false), {
-        instanceOf: TypeError,
-        message: "options must be a plain javascript object!"
-    });
-});
-
-ava("download public repository (without extraction)", async(assert) => {
-    const file = await download("SlimIO.Config", {
-        dest: __dirname
-    });
-    assert.is(file, join(__dirname, "Config-master.tar.gz"));
-    await access(file);
-    await unlink(file);
-});
-
-ava("download public repository (at current working dir)", async(assert) => {
-    const file = await download("SlimIO.Config");
-    assert.is(file, join(process.cwd(), "Config-master.tar.gz"));
-    await access(file);
-    await unlink(file);
-});
-
-ava("download private repository (without extraction)", async(assert) => {
-    const file = await download("SlimIO.Core", {
-        dest: __dirname,
-        auth: process.env.GIT_TOKEN
-    });
-    assert.is(file, join(__dirname, "Core-master.tar.gz"));
-    await access(file);
-    await unlink(file);
-});
-
-ava("download false repository", async(assert) => {
-    assert.plan(2);
-    await assert.throwsAsync(download("SlimIO.test", {
-        dest: __dirname
-    }), { instanceOf: Error, message: "Not Found" });
-
-    try {
-        await access(join(__dirname, "test-master.tar.gz"));
+    const fullPath = join(__dirname, dirent.name);
+    if (dirent.isDirectory()) {
+      await fs.rm(fullPath, { recursive: true, force: true });
     }
-    catch (err) {
-        assert.pass();
+    else {
+      await fs.unlink(fullPath);
     }
-});
-
-ava("download public repository (with extraction)", async(assert) => {
-    assert.plan(3);
-    const dir = await download("SlimIO.is", {
-        dest: __dirname,
-        extract: true
-    });
-    assert.is(dir, join(__dirname, "is-master"));
-    const st = await stat(dir);
-    assert.true(st.isDirectory());
-
-    try {
-        await access(join(__dirname, "is-master.tar.gz"));
-    }
-    catch (err) {
-        assert.pass();
-    }
-});
-
-ava("download public repository (with extraction and unlink disabled)", async(assert) => {
-    assert.plan(2);
-    const dir = await download("SlimIO.Safe-emitter", {
-        dest: __dirname,
-        unlink: false,
-        extract: true
-    });
-    await access(join(__dirname, "Safe-emitter-master.tar.gz"));
-    assert.is(dir, join(__dirname, "Safe-emitter-master"));
-    assert.true((await stat(dir)).isDirectory());
+  }
 });
