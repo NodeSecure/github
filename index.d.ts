@@ -11,8 +11,12 @@ export interface DownloadOptions {
    * @default main
    */
   branch?: string;
-  /** Authentication token for private repositories */
-  auth?: string;
+  /**
+   * Authentication token for private repositories
+   *
+   * @default process.env.GITHUB_TOKEN
+   */
+  token?: string;
 }
 
 export type ExtractOptions = DownloadOptions & {

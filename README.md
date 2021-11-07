@@ -25,11 +25,11 @@ $ yarn add @nodesecure/github
 ```js
 import * as github from "@nodesecure/github";
 
-const tarGZPath = await github.download("NodeSecure.utils");
-console.log(tarGZPath);
+const utils = await github.download("NodeSecure.utils");
+console.log(utils.location);
 
-const extractedDirLocation = await github.downloadAndExtract("NodeSecure.scanner");
-console.log(extractedDirLocation);
+const scanner = await github.downloadAndExtract("NodeSecure.scanner");
+console.log(scanner.location);
 ```
 
 ## API
@@ -48,8 +48,12 @@ export interface DownloadOptions {
    * @default main
    */
   branch?: string;
-  /** Authentication token for private repositories */
-  auth?: string;
+  /**
+   * Authentication token for private repositories
+   *
+   * @default process.env.GITHUB_TOKEN
+   */
+  token?: string;
 }
 
 export type ExtractOptions = DownloadOptions & {

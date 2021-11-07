@@ -16,11 +16,18 @@ const kDefaultBranch = "main";
 // VARS
 let GITHUB_TOKEN = process.env.GITHUB_TOKEN ?? void 0;
 
+/**
+ * @example
+ * const { location } = await github.download("NodeSecure.utils", {
+ *  dest: __dirname
+ * });
+ * console.log(location);
+ */
 export async function download(repository, options = Object.create(null)) {
   if (typeof repository !== "string") {
     throw new TypeError("repository must be a string!");
   }
-  const { branch = kDefaultBranch, dest = process.cwd(), auth } = options;
+  const { branch = kDefaultBranch, dest = process.cwd(), token } = options;
 
   // Create URL!
   const [organization, repo] = repository.split(".");
@@ -31,7 +38,7 @@ export async function download(repository, options = Object.create(null)) {
     headers: {
       "User-Agent": "NodeSecure",
       "Accept-Encoding": "gzip, deflate",
-      Authorization: typeof auth === "string" ? `token ${auth}` : GITHUB_TOKEN
+      Authorization: typeof token === "string" ? `token ${token}` : GITHUB_TOKEN
     },
     maxRedirections: 1
   })(createWriteStream(location));
@@ -43,11 +50,18 @@ export async function download(repository, options = Object.create(null)) {
   };
 }
 
+/**
+ * @example
+ * const { location } = await github.downloadAndExtract("NodeSecure.utils", {
+ *  removeArchive: false
+ * });
+ * console.log(location);
+ */
 export async function downloadAndExtract(repository, options = Object.create(null)) {
   const { removeArchive = true, ...downloadOptions } = options;
-  const { branch = kDefaultBranch, dest = process.cwd(), auth } = downloadOptions;
+  const { branch = kDefaultBranch, dest = process.cwd(), token } = downloadOptions;
 
-  const result = await download(repository, { branch, dest, auth });
+  const result = await download(repository, { branch, dest, token });
 
   await pipeline(
     createReadStream(result.location),
