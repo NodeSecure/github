@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 // Import Node.js Dependencies
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
@@ -8,14 +11,21 @@ import test from "tape";
 import is from "@slimio/is";
 
 // Import Internal Dependencies
-import { download } from "../index.js";
+import * as github from "../index.js";
 
 // CONSTANTS
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-test("export should be an asyncFunction", (tape) => {
-  tape.true(is.func(download));
-  tape.true(is.asyncFunction(download));
+test("github.download should be an asyncFunction", (tape) => {
+  tape.true(is.func(github.download));
+  tape.true(is.asyncFunction(github.download));
+
+  tape.end();
+});
+
+test("github.downloadAndExtract should be an asyncFunction", (tape) => {
+  tape.true(is.func(github.downloadAndExtract));
+  tape.true(is.asyncFunction(github.downloadAndExtract));
 
   tape.end();
 });
@@ -24,7 +34,7 @@ test("download must throw: repository must be a string!", async(tape) => {
   tape.plan(2);
 
   try {
-    await download(10);
+    await github.download(10);
   }
   catch (error) {
     tape.strictEqual(error.name, "TypeError");
@@ -35,62 +45,39 @@ test("download must throw: repository must be a string!", async(tape) => {
 });
 
 test("download public repository (without extraction)", async(tape) => {
-  const file = await download("SlimIO.Config", {
-    dest: __dirname
+  const { location, repository, organization } = await github.download("SlimIO.Config", {
+    dest: __dirname,
+    branch: "master"
   });
-  tape.is(file, join(__dirname, "Config-master.tar.gz"));
+  tape.is(repository, "Config");
+  tape.is(organization, "SlimIO");
+  tape.is(location, join(__dirname, "Config-master.tar.gz"));
 
-  await fs.access(file);
-  await fs.unlink(file);
+  await fs.access(location);
+  await fs.unlink(location);
 
   tape.end();
 });
 
 test("download public repository (at current working dir)", async(tape) => {
-  const file = await download("SlimIO.Config");
-  tape.is(file, join(process.cwd(), "Config-master.tar.gz"));
+  const { location } = await github.download("NodeSecure.utils");
+  tape.is(location, join(process.cwd(), "utils-main.tar.gz"));
 
-  await fs.access(file);
-  await fs.unlink(file);
+  await fs.access(location);
+  await fs.unlink(location);
 
   tape.end();
 });
 
 test("download private repository (without extraction)", async(tape) => {
-  const file = await download("SlimIO.Core", {
+  const { location } = await github.download("SlimIO.Core", {
     dest: __dirname,
-    auth: process.env.GIT_TOKEN
+    branch: "master"
   });
-  tape.is(file, join(__dirname, "Core-master.tar.gz"));
+  tape.is(location, join(__dirname, "Core-master.tar.gz"));
 
-  await fs.access(file);
-  await fs.unlink(file);
-
-  tape.end();
-});
-
-test("download false repository", async(tape) => {
-  tape.plan(2);
-
-  try {
-    await download("SlimIO.test", {
-      dest: __dirname
-    });
-  }
-  catch (err) {
-    console.log(err);
-
-    tape.pass();
-  }
-
-  try {
-    await fs.access(join(__dirname, "test-master.tar.gz"));
-  }
-  catch (err) {
-    console.log(err);
-
-    tape.pass();
-  }
+  await fs.access(location);
+  await fs.unlink(location);
 
   tape.end();
 });
@@ -98,13 +85,13 @@ test("download false repository", async(tape) => {
 test("download public repository (with extraction)", async(tape) => {
   tape.plan(3);
 
-  const dir = await download("SlimIO.is", {
+  const { location } = await github.downloadAndExtract("SlimIO.is", {
     dest: __dirname,
-    extract: true
+    branch: "master"
   });
-  tape.is(dir, join(__dirname, "is-master"));
+  tape.is(location, join(__dirname, "is-master"));
 
-  const st = await fs.stat(dir);
+  const st = await fs.stat(location);
   tape.true(st.isDirectory());
 
   try {
@@ -117,18 +104,18 @@ test("download public repository (with extraction)", async(tape) => {
   tape.end();
 });
 
-test("download public repository (with extraction and unlink disabled)", async(tape) => {
+test("download public repository (with extraction and removeArchive disabled)", async(tape) => {
   tape.plan(2);
 
-  const dir = await download("SlimIO.Safe-emitter", {
+  const { location } = await github.downloadAndExtract("SlimIO.Safe-emitter", {
     dest: __dirname,
-    unlink: false,
-    extract: true
+    branch: "master",
+    removeArchive: false
   });
 
   await fs.access(join(__dirname, "Safe-emitter-master.tar.gz"));
-  tape.is(dir, join(__dirname, "Safe-emitter-master"));
-  tape.true((await fs.stat(dir)).isDirectory());
+  tape.is(location, join(__dirname, "Safe-emitter-master"));
+  tape.true((await fs.stat(location)).isDirectory());
 
   tape.end();
 });
