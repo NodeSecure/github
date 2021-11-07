@@ -1,9 +1,10 @@
-# Github API
+# Github
 
 ![version](https://img.shields.io/badge/dynamic/json.svg?url=https://raw.githubusercontent.com/NodeSecure/github/master/package.json&query=$.version&label=Version)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/NodeSecure/github/commit-activity)
 ![MIT](https://img.shields.io/github/license/mashape/apistatus.svg)
 [![Known Vulnerabilities](https://snyk.io/test/github/NodeSecure/github/badge.svg?targetFile=package.json)](https://snyk.io/test/github/SlimIO/github?targetFile=package.json)
+![build](https://img.shields.io/github/workflow/status/NodeSecure/github/Node.js%20CI)
 
 Download and (optionaly) extract github repository archive.
 
