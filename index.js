@@ -14,7 +14,7 @@ const kGithubURL = new URL("https://github.com/");
 const kDefaultBranch = "main";
 
 // VARS
-let GITHUB_AUTH_TOKEN = process.env.GITHUB_AUTH_TOKEN ?? void 0;
+let GITHUB_TOKEN = process.env.GITHUB_TOKEN ?? void 0;
 
 export async function download(repository, options = Object.create(null)) {
   if (typeof repository !== "string") {
@@ -31,7 +31,7 @@ export async function download(repository, options = Object.create(null)) {
     headers: {
       "User-Agent": "NodeSecure",
       "Accept-Encoding": "gzip, deflate",
-      Authorization: typeof auth === "string" ? `token ${auth}` : GITHUB_AUTH_TOKEN
+      Authorization: typeof auth === "string" ? `token ${auth}` : GITHUB_TOKEN
     },
     maxRedirections: 1
   })(createWriteStream(location));
@@ -65,5 +65,5 @@ export async function downloadAndExtract(repository, options = Object.create(nul
 }
 
 export function setToken(githubToken) {
-  GITHUB_AUTH_TOKEN = githubToken;
+  GITHUB_TOKEN = githubToken;
 }

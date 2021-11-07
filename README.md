@@ -75,7 +75,7 @@ export function setToken(githubToken: string): void;
 ```
 
 ### Private repositories
-To work with private repositories you can either setup a `GITHUB_AUTH_TOKEN` system variable or use `setToken` method:
+To work with private repositories you can either setup a `GITHUB_TOKEN` system variable or use `setToken` method:
 
 ```js
 import * as github from "@nodesecure/github";

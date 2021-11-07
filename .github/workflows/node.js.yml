@@ -21,4 +21,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run tests
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_SECRET }}
         run: npm run test
