@@ -13,6 +13,9 @@ import httpie from "@myunisoft/httpie";
 const kGithubURL = new URL("https://github.com/");
 const kDefaultBranch = "main";
 
+// VARS
+let GITHUB_AUTH_TOKEN = process.env.GITHUB_AUTH_TOKEN ?? void 0;
+
 export async function download(repository, options = Object.create(null)) {
   if (typeof repository !== "string") {
     throw new TypeError("repository must be a string!");
@@ -20,38 +23,47 @@ export async function download(repository, options = Object.create(null)) {
   const { branch = kDefaultBranch, dest = process.cwd(), auth } = options;
 
   // Create URL!
-  const [org, repo] = repository.split(".");
-  const repositoryURL = new URL(`${org}/${repo}/archive/${branch}.tar.gz`, kGithubURL);
-  const fileDestination = path.join(dest, `${repo}-${branch}.tar.gz`);
+  const [organization, repo] = repository.split(".");
+  const repositoryURL = new URL(`${organization}/${repo}/archive/${branch}.tar.gz`, kGithubURL);
+  const location = path.join(dest, `${repo}-${branch}.tar.gz`);
 
   await httpie.stream("GET", repositoryURL, {
     headers: {
       "User-Agent": "NodeSecure",
       "Accept-Encoding": "gzip, deflate",
-      Authorization: typeof auth === "string" ? `token ${auth}` : void 0
+      Authorization: typeof auth === "string" ? `token ${auth}` : GITHUB_AUTH_TOKEN
     },
     maxRedirections: 1
-  })(createWriteStream(fileDestination));
+  })(createWriteStream(location));
 
-  return fileDestination;
+  return {
+    location,
+    organization,
+    repository: repo
+  };
 }
 
-export async function downloadAndExtract(repository, options) {
+export async function downloadAndExtract(repository, options = Object.create(null)) {
   const { removeArchive = true, ...downloadOptions } = options;
   const { branch = kDefaultBranch, dest = process.cwd(), auth } = downloadOptions;
 
-  const fileDestination = await download(repository, { branch, dest, auth });
+  const result = await download(repository, { branch, dest, auth });
 
   await pipeline(
-    createReadStream(fileDestination),
+    createReadStream(result.location),
     createGunzip(),
     tar.extract(dest)
   );
+
   if (removeArchive) {
-    await fs.unlink(fileDestination);
+    await fs.unlink(result.location);
   }
 
-  const [, repo] = repository.split(".");
+  result.location = path.join(dest, `${result.repository}-${branch}`);
 
-  return path.join(dest, `${repo}-${branch}`);
+  return result;
+}
+
+export function setToken(githubToken) {
+  GITHUB_AUTH_TOKEN = githubToken;
 }

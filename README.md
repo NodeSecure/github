@@ -60,16 +60,27 @@ export type ExtractOptions = DownloadOptions & {
   removeArchive?: boolean;
 }
 
-export type FileSystemPath = string;
+export interface DownloadResult {
+  /** Archive or repository location on disk */
+  location: string;
+  /** Github repository name */
+  repository: string;
+  /** Github organization name */
+  organization: string;
+}
 
-export function download(repo: string, options?: DownloadOptions): Promise<FileSystemPath>;
-export function downloadAndExtract(repo: string, options?: ExtractOptions): Promise<FileSystemPath>;
+export function download(repo: string, options?: DownloadOptions): Promise<DownloadResult>;
+export function downloadAndExtract(repo: string, options?: ExtractOptions): Promise<DownloadResult>;
+export function setToken(githubToken: string): void;
 ```
 
-## Env
-To be able to work on the project, please create a root `.env` file with these:
-```
-GIT_TOKEN=token_here
+### Private repositories
+To work with private repositories you can either setup a `GITHUB_AUTH_TOKEN` system variable or use `setToken` method:
+
+```js
+import * as github from "@nodesecure/github";
+
+github.setToken("...");
 ```
 
 ## License

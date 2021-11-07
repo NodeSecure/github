@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 // Import Node.js Dependencies
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
