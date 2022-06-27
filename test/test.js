@@ -138,3 +138,37 @@ test("teardown", async() => {
     }
   }
 });
+
+test("get contributors last activites for NodeSecure/scanner", async(tape) => {
+  const contributors = await github.getContributorsLastActivities("NodeSecure", "scanner");
+
+  tape.true(contributors.has("fraxken"));
+});
+
+test("getContributorsLastActivities must throw: repository must be a string!", async(tape) => {
+  tape.plan(2);
+
+  try {
+    await await github.getContributorsLastActivities("My-fake-owner", 1);
+  }
+  catch (error) {
+    tape.strictEqual(error.name, "TypeError");
+    tape.strictEqual(error.message, "repository must be a string!");
+  }
+
+  tape.end();
+});
+
+test("getContributorsLastActivities must throw: owner must be a string!", async(tape) => {
+  tape.plan(2);
+
+  try {
+    await await github.getContributorsLastActivities(1, "my-fake-repository");
+  }
+  catch (error) {
+    tape.strictEqual(error.name, "TypeError");
+    tape.strictEqual(error.message, "owner must be a string!");
+  }
+
+  tape.end();
+});
