@@ -81,32 +81,19 @@ export async function downloadAndExtract(repository, options = Object.create(nul
 
 export async function getContributorsLastActivities(owner, repository, options = Object.create(null)) {
   if (typeof owner !== "string") {
-    throw new TypeError("owner must be a string!");
+    throw new TypeError(`owner must be a string, but got ${owner}`);
   }
 
   if (typeof repository !== "string") {
-    throw new TypeError("repository must be a string!");
+    throw new TypeError(`repository must be a string, but got ${repository}`);
   }
 
   const { token } = options;
 
   const contributorsUrl = new URL(`repos/${owner}/${repository}/contributors`, kGithubApi);
 
-  const { data } = await httpie.get(contributorsUrl, {
-    headers: {
-      "User-Agent": "NodeSecure",
-      Authorization: typeof token === "string" ? `token ${token}` : GITHUB_TOKEN
-    },
-    maxRedirections: 1
-  });
-
-  const lastActivities = new Map();
-  async function hydrateLastActivities(contributor) {
-    const formatedRepositoryName = `${owner}/${repository}`;
-
-    const eventsUrl = new URL(`users/${contributor}/events`, kGithubApi);
-
-    const { data } = await httpie.get(eventsUrl, {
+  try {
+    const { data } = await httpie.get(contributorsUrl, {
       headers: {
         "User-Agent": "NodeSecure",
         Authorization: typeof token === "string" ? `token ${token}` : GITHUB_TOKEN
@@ -114,36 +101,53 @@ export async function getContributorsLastActivities(owner, repository, options =
       maxRedirections: 1
     });
 
-    function getLastEvents(events) {
-      const lastEvent = events[0];
-      const lastRelatedEvent = events.find((event) => event.repo.name === formatedRepositoryName);
+    const contributors = data.filter((contributor) => !/bot/.test(contributor.login))
+      .map((contributor) => hydrateLastActivities(contributor.login, owner, repository));
 
-      if (lastEvent.repo.name === formatedRepositoryName) {
-        return [lastEvent];
-      }
+    const lastActivities = new Map(await Promise.all(contributors));
 
-      return lastRelatedEvent ?
-        [lastEvent, lastRelatedEvent] : [lastEvent];
+    return lastActivities;
+  }
+  catch (error) {
+    return null;
+  }
+}
+
+async function hydrateLastActivities(contributor, owner, repository) {
+  const formatedRepositoryName = `${owner}/${repository}`;
+
+  const eventsUrl = new URL(`users/${contributor}/events`, kGithubApi);
+
+  const { data } = await httpie.get(eventsUrl, {
+    headers: {
+      "User-Agent": "NodeSecure",
+      Authorization: typeof token === "string" ? `token ${token}` : GITHUB_TOKEN
+    },
+    maxRedirections: 1
+  });
+
+  function getLastEvents(events) {
+    const lastEvent = events[0];
+    const lastRelatedEvent = events.find((event) => event.repo.name === formatedRepositoryName);
+
+    if (lastEvent.repo.name === formatedRepositoryName) {
+      return [lastEvent];
     }
 
-    lastActivities.set(contributor,
-      [...getLastEvents(data)]
-        .map((event) => {
-          return {
-            repository: event.repo.name,
-            actualRepo: event.repo.name === formatedRepositoryName,
-            lastActivity: event.created_at
-          };
-        })
-    );
+    return lastRelatedEvent ?
+      [lastEvent, lastRelatedEvent] : [lastEvent];
   }
 
-  const contributors = data.filter((contributor) => !/bot/.test(contributor.login))
-    .map((contributor) => hydrateLastActivities(contributor.login));
-
-  await Promise.all(contributors);
-
-  return lastActivities;
+  return [contributor,
+    [...getLastEvents(data)]
+      .map((event) => {
+        return {
+          repository: event.repo.name,
+          actualRepo: event.repo.name === formatedRepositoryName,
+          lastActivity: event.created_at
+        };
+      })
+  ];
 }
 
 export function setToken(githubToken) {

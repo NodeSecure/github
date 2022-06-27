@@ -55,5 +55,5 @@ export function getContributorsLastActivities(
   owner: string,
   repository: string,
   options?: GetContributorsLastActivities
-): Promise<GetContributorsLastActivitiesResult>;
+): Promise<GetContributorsLastActivitiesResult | null>;
 export function setToken(githubToken: string): void;

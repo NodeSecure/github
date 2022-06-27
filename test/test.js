@@ -145,30 +145,41 @@ test("get contributors last activites for NodeSecure/scanner", async(tape) => {
   tape.true(contributors.has("fraxken"));
 });
 
-test("getContributorsLastActivities must throw: repository must be a string!", async(tape) => {
+test("getContributorsLastActivities must throw: repository must be a string, but got `repository`", async(tape) => {
   tape.plan(2);
 
+  const repository = 1;
+
   try {
-    await await github.getContributorsLastActivities("My-fake-owner", 1);
+    await github.getContributorsLastActivities("My-fake-owner", repository);
   }
   catch (error) {
     tape.strictEqual(error.name, "TypeError");
-    tape.strictEqual(error.message, "repository must be a string!");
+    tape.strictEqual(error.message, `repository must be a string, but got ${repository}`);
   }
 
   tape.end();
 });
 
-test("getContributorsLastActivities must throw: owner must be a string!", async(tape) => {
+test("getContributorsLastActivities must throw: owner must be a string, but got `owner`", async(tape) => {
   tape.plan(2);
 
+  const owner = 1;
+
   try {
-    await await github.getContributorsLastActivities(1, "my-fake-repository");
+    await github.getContributorsLastActivities(owner, "my-fake-repository");
   }
   catch (error) {
     tape.strictEqual(error.name, "TypeError");
-    tape.strictEqual(error.message, "owner must be a string!");
+    tape.strictEqual(error.message, `owner must be a string, but got ${owner}`);
   }
 
+  tape.end();
+});
+
+test("getContributorsLastActivities must not throw & return null when he can't find a repository", async(tape) => {
+  const contributors = await github.getContributorsLastActivities("my-fake-owner", "my-fake-repository");
+
+  tape.is(contributors, null);
   tape.end();
 });
