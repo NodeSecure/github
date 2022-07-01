@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/NodeSecure/github#readme",
   "dependencies": {
-    "@myunisoft/httpie": "^1.7.0",
+    "@myunisoft/httpie": "^1.8.0",
     "tar-fs": "^2.1.1"
   },
   "devDependencies": {
