@@ -37,6 +37,23 @@ export interface DownloadResult {
   organization: string;
 }
 
+export interface GetContributorsLastActivities {
+  token?: string;
+}
+
+export interface GetContributorsLastActivitiesResult {
+  [key: string]: {
+    repository: string;
+    actualRepo: boolean,
+    lastActivity: string;
+  }[];
+}
+
 export function download(repo: string, options?: DownloadOptions): Promise<DownloadResult>;
 export function downloadAndExtract(repo: string, options?: ExtractOptions): Promise<DownloadResult>;
+export function getContributorsLastActivities(
+  owner: string,
+  repository: string,
+  options?: GetContributorsLastActivities
+): Promise<GetContributorsLastActivitiesResult | null>;
 export function setToken(githubToken: string): void;
