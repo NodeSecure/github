@@ -37,23 +37,30 @@ export interface DownloadResult {
   organization: string;
 }
 
-export interface GetContributorsLastActivities {
+export interface GetContributorLastActivitiesOptions {
+  /** Owner of the github repository "nodesecure/github" => "nodesecure" */
+  owner: string,
+  /** Name of the repository "nodesecure/github" => "github" */
+  repository: string;
+  /** Audited user */
+  contributor: string;
+  /**
+   * Authentication token for Github API
+   *
+   * @default process.env.GITHUB_TOKEN
+   */
   token?: string;
 }
 
-export interface GetContributorsLastActivitiesResult {
-  [key: string]: {
-    repository: string;
-    actualRepo: boolean,
-    lastActivity: string;
-  }[];
-}
+export type Activity = Record<string, {
+  repository: string;
+  actualRepo: boolean,
+  lastActivity: string;
+}>;
+
+export type GetContributorLastActivitiesResult = [Activity, Activity];
 
 export function download(repo: string, options?: DownloadOptions): Promise<DownloadResult>;
 export function downloadAndExtract(repo: string, options?: ExtractOptions): Promise<DownloadResult>;
-export function getContributorsLastActivities(
-  owner: string,
-  repository: string,
-  options?: GetContributorsLastActivities
-): Promise<GetContributorsLastActivitiesResult | null>;
+export function getContributorLastActivities(options: GetContributorLastActivitiesOptions): Promise<GetContributorLastActivitiesResult | null>;
 export function setToken(githubToken: string): void;

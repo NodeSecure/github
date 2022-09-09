@@ -8,10 +8,10 @@ import { pipeline } from "stream/promises";
 // Import Third-party Dependencies
 import tar from "tar-fs";
 import httpie from "@myunisoft/httpie";
+import { Octokit } from "octokit";
 
 // CONSTANTS
 const kGithubURL = new URL("https://github.com/");
-const kGithubApi = new URL("https://api.github.com/");
 const kDefaultBranch = "main";
 
 // VARS
@@ -79,7 +79,9 @@ export async function downloadAndExtract(repository, options = Object.create(nul
   return result;
 }
 
-export async function getContributorsLastActivities(owner, repository, options = Object.create(null)) {
+export async function getContributorLastActivities(options) {
+  const { owner, repository, contributor, token } = options;
+
   if (typeof owner !== "string") {
     throw new TypeError(`owner must be a string, but got ${owner}`);
   }
@@ -88,45 +90,21 @@ export async function getContributorsLastActivities(owner, repository, options =
     throw new TypeError(`repository must be a string, but got ${repository}`);
   }
 
-  const { token } = options;
-
-  const contributorsUrl = new URL(`repos/${owner}/${repository}/contributors`, kGithubApi);
-
-  try {
-    const { data } = await httpie.get(contributorsUrl, {
-      headers: {
-        "User-Agent": "NodeSecure",
-        Authorization: typeof token === "string" ? `token ${token}` : GITHUB_TOKEN
-      },
-      maxRedirections: 1
-    });
-
-    const contributors = data.filter((contributor) => !/bot/.test(contributor.login))
-      .map((contributor) => hydrateLastActivities(contributor.login, owner, repository));
-
-    const lastActivities = new Map(await Promise.all(contributors));
-
-    return lastActivities;
+  if (typeof contributor !== "string") {
+    throw new TypeError(`contributor must be a string, but got ${contributor}`);
   }
-  catch (error) {
-    return null;
-  }
-}
 
-async function hydrateLastActivities(contributor, owner, repository) {
   const formatedRepositoryName = `${owner}/${repository}`;
 
-  const eventsUrl = new URL(`users/${contributor}/events`, kGithubApi);
-
-  const { data } = await httpie.get(eventsUrl, {
-    headers: {
-      "User-Agent": "NodeSecure",
-      Authorization: typeof token === "string" ? `token ${token}` : GITHUB_TOKEN
-    },
-    maxRedirections: 1
+  const octokit = new Octokit({
+    auth: typeof token === "string" ? token : GITHUB_TOKEN
   });
 
   function getLastEvents(events) {
+    if (events.length === 0) {
+      return null;
+    }
+
     const lastEvent = events[0];
     const lastRelatedEvent = events.find((event) => event.repo.name === formatedRepositoryName);
 
@@ -138,16 +116,22 @@ async function hydrateLastActivities(contributor, owner, repository) {
       [lastEvent, lastRelatedEvent] : [lastEvent];
   }
 
-  return [contributor,
-    [...getLastEvents(data)]
-      .map((event) => {
-        return {
-          repository: event.repo.name,
-          actualRepo: event.repo.name === formatedRepositoryName,
-          lastActivity: event.created_at
-        };
-      })
-  ];
+  try {
+    const { data } = await octokit.request("GET /users/{contributor}/events", {
+      contributor
+    });
+
+    return getLastEvents(data).map((event) => {
+      return {
+        repository: event.repo.name,
+        actualRepo: event.repo.name === formatedRepositoryName,
+        lastActivity: event.created_at
+      };
+    });
+  }
+  catch (error) {
+    return null;
+  }
 }
 
 export function setToken(githubToken) {
