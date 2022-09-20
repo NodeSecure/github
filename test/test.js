@@ -8,6 +8,7 @@ import fs from "fs/promises";
 
 // Import Third-party Dependencies
 import test from "tape";
+import * as tinyspy from "tinyspy";
 import is from "@slimio/is";
 
 // Import Internal Dependencies
@@ -140,13 +141,22 @@ test("teardown", async() => {
 });
 
 test("get contributor last activities", async(tape) => {
-  const [lastEvent] = await github.getContributorLastActivities({
+  const lastActivity = {
+    repository: "owner/repository",
+    actualRepo: false,
+    lastActivity: Date.now()
+  };
+
+  const spied = tinyspy.spy(github.getContributorLastActivities).nextResult(lastActivity);
+
+  await spied({
     owner: "NodeSecure",
     repository: "scanner",
     contributor: "fraxken"
   });
 
-  tape.true(lastEvent.lastActivity);
+  tape.is(spied.callCount, 1);
+  tape.is(spied.returns[0], lastActivity);
 });
 
 test("getContributorLastActivities must throw: repository must be a string, but got `repository`", async(tape) => {
