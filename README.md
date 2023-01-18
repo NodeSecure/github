@@ -1,17 +1,17 @@
 # Github
 
-![version](https://img.shields.io/badge/dynamic/json.svg?url=https://raw.githubusercontent.com/NodeSecure/github/master/package.json&query=$.version&label=Version)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/NodeSecure/github/commit-activity)
+![version](https://img.shields.io/badge/dynamic/json.svg?style=for-the-badge&url=https://raw.githubusercontent.com/NodeSecure/github/master/package.json&query=$.version&label=Version)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=for-the-badge)](https://github.com/NodeSecure/github/commit-activity)
 [![OpenSSF
-Scorecard](https://api.securityscorecards.dev/projects/github.com/NodeSecure/github/badge)](https://api.securityscorecards.dev/projects/github.com/NodeSecure/github)
-![MIT](https://img.shields.io/github/license/mashape/apistatus.svg)
-[![Known Vulnerabilities](https://snyk.io/test/github/NodeSecure/github/badge.svg?targetFile=package.json)](https://snyk.io/test/github/SlimIO/github?targetFile=package.json)
-![build](https://img.shields.io/github/actions/workflow/status/NodeSecure/github/node.js.yml)
-
+Scorecard](https://api.securityscorecards.dev/projects/github.com/NodeSecure/github/badge?style=for-the-badge)](https://api.securityscorecards.dev/projects/github.com/NodeSecure/github)
+![MIT](https://img.shields.io/github/license/mashape/apistatus.svg?style=for-the-badge)
+![known vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/NodeSecure/github?style=for-the-badge)
+![build](https://img.shields.io/github/actions/workflow/status/NodeSecure/github/node.js.yml?style=for-the-badge)
 
 Download and (optionaly) extract github repository archive.
 
 ## Requirements
+
 - [Node.js](https://nodejs.org/en/) v16 or higher
 
 ## Getting Started
@@ -25,6 +25,7 @@ $ yarn add @nodesecure/github
 ```
 
 ## Usage example
+
 ```js
 import * as github from "@nodesecure/github";
 
@@ -34,7 +35,10 @@ console.log(utils.location);
 const scanner = await github.downloadAndExtract("NodeSecure.scanner");
 console.log(scanner.location);
 
-const contributors = await github.getContributorsLastActivities("NodeSecure", "scanner");
+const contributors = await github.getContributorsLastActivities(
+  "NodeSecure",
+  "scanner"
+);
 console.log(contributors);
 ```
 
@@ -69,7 +73,7 @@ export type ExtractOptions = DownloadOptions & {
    * @default true
    */
   removeArchive?: boolean;
-}
+};
 
 export interface DownloadResult {
   /** Archive or repository location on disk */
@@ -87,12 +91,18 @@ export interface GetContributorsLastActivities {
 export interface GetContributorsLastActivitiesResult {
   [key: string]: {
     repository: string;
-    actualRepo: boolean,
+    actualRepo: boolean;
     lastActivity: string;
   }[];
 }
-export function download(repo: string, options?: DownloadOptions): Promise<DownloadResult>;
-export function downloadAndExtract(repo: string, options?: ExtractOptions): Promise<DownloadResult>;
+export function download(
+  repo: string,
+  options?: DownloadOptions
+): Promise<DownloadResult>;
+export function downloadAndExtract(
+  repo: string,
+  options?: ExtractOptions
+): Promise<DownloadResult>;
 export function getContributorsLastActivities(
   owner: string,
   repository: string,
@@ -102,6 +112,7 @@ export function setToken(githubToken: string): void;
 ```
 
 ### Private repositories
+
 To work with private repositories you can either setup a `GITHUB_TOKEN` system variable or use `setToken` method:
 
 ```js
@@ -113,7 +124,9 @@ github.setToken("...");
 ## Contributors ✨
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -135,4 +148,5 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## License
+
 MIT
