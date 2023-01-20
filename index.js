@@ -8,10 +8,10 @@ import { pipeline } from "stream/promises";
 // Import Third-party Dependencies
 import tar from "tar-fs";
 import httpie from "@myunisoft/httpie";
-import { Octokit } from "octokit";
 
 // CONSTANTS
 const kGithubURL = new URL("https://github.com/");
+const kGithubApi = new URL("https://api.github.com/");
 const kDefaultBranch = "main";
 
 // VARS
@@ -94,11 +94,7 @@ export async function getContributorLastActivities(options) {
     throw new TypeError(`contributor must be a string, but got ${contributor}`);
   }
 
-  const formatedRepositoryName = `${owner}/${repository}`;
-
-  const octokit = new Octokit({
-    auth: typeof token === "string" ? token : GITHUB_TOKEN
-  });
+  const formattedRepositoryName = `${owner}/${repository}`;
 
   function getLastEvents(events) {
     if (events.length === 0) {
@@ -106,9 +102,9 @@ export async function getContributorLastActivities(options) {
     }
 
     const lastEvent = events[0];
-    const lastRelatedEvent = events.find((event) => event.repo.name === formatedRepositoryName);
+    const lastRelatedEvent = events.find((event) => event.repo.name === formattedRepositoryName);
 
-    if (lastEvent.repo.name === formatedRepositoryName) {
+    if (lastEvent.repo.name === formattedRepositoryName) {
       return [lastEvent];
     }
 
@@ -117,14 +113,21 @@ export async function getContributorLastActivities(options) {
   }
 
   try {
-    const { data } = await octokit.request("GET /users/{contributor}/events", {
-      contributor
+    const newUrl = new URL(`/users/${contributor}/events`, kGithubApi);
+
+    const response = await httpie.get(newUrl, {
+      headers: {
+        "User-Agent": "NodeSecure",
+        Authorization: typeof token === "string" ? `token ${token}` :
+          `${typeof GITHUB_TOKEN === "undefined" ? undefined : `token ${GITHUB_TOKEN}`}`
+      },
+      maxRedirections: 1
     });
 
-    return getLastEvents(data).map((event) => {
+    return getLastEvents(response.data).map((event) => {
       return {
         repository: event.repo.name,
-        actualRepo: event.repo.name === formatedRepositoryName,
+        actualRepo: event.repo.name === formattedRepositoryName,
         lastActivity: event.created_at
       };
     });
