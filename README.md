@@ -1,7 +1,7 @@
 # Github
 
 ![version](https://img.shields.io/badge/dynamic/json.svg?style=for-the-badge&url=https://raw.githubusercontent.com/NodeSecure/github/master/package.json&query=$.version&label=Version)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=for-the-badge)](https://github.com/NodeSecure/github/commit-activity)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=for-the-badge)](https://github.com/NodeSecure/github/graphs/commit-activity)
 [![OpenSSF
 Scorecard](https://api.securityscorecards.dev/projects/github.com/NodeSecure/github/badge?style=for-the-badge)](https://api.securityscorecards.dev/projects/github.com/NodeSecure/github)
 ![MIT](https://img.shields.io/github/license/mashape/apistatus.svg?style=for-the-badge)
