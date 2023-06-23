@@ -4,7 +4,7 @@
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=for-the-badge)](https://github.com/NodeSecure/github/graphs/commit-activity)
 [![OpenSSF
 Scorecard](https://api.securityscorecards.dev/projects/github.com/NodeSecure/github/badge?style=for-the-badge)](https://api.securityscorecards.dev/projects/github.com/NodeSecure/github)
-![MIT](https://img.shields.io/github/license/mashape/apistatus.svg?style=for-the-badge)
+![MIT](https://img.shields.io/github/license/NodeSecure/github.svg?style=for-the-badge)
 ![known vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/NodeSecure/github?style=for-the-badge)
 ![build](https://img.shields.io/github/actions/workflow/status/NodeSecure/github/node.js.yml?style=for-the-badge)
 
