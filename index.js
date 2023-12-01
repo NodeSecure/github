@@ -1,13 +1,15 @@
 // Import Node.js Dependencies
-import { createWriteStream, createReadStream } from "fs";
-import fs from "fs/promises";
-import path from "path";
-import { createGunzip } from "zlib";
-import { pipeline } from "stream/promises";
+import { createWriteStream, createReadStream } from "node:fs";
+import fs from "node:fs/promises";
+import path from "node:path";
+import { createGunzip } from "node:zlib";
+import { pipeline } from "node:stream/promises";
 
 // Import Third-party Dependencies
 import tar from "tar-fs";
 import httpie from "@myunisoft/httpie";
+import * as dotenv from "dotenv";
+dotenv.config();
 
 // CONSTANTS
 const kGithubURL = new URL("https://github.com/");
