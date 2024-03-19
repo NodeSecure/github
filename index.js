@@ -1,7 +1,7 @@
 // Import Node.js Dependencies
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
 import { createWriteStream, createReadStream } from "node:fs";
-import fs from "node:fs/promises";
-import path from "node:path";
 import { createGunzip } from "node:zlib";
 import { pipeline } from "node:stream/promises";
 
@@ -37,14 +37,15 @@ export async function download(repository, options = Object.create(null)) {
   const repositoryURL = new URL(`${organization}/${repo}/archive/${branch}.tar.gz`, kGithubURL);
   const location = path.join(dest, `${repo}-${branch}.tar.gz`);
 
-  await httpie.stream("GET", repositoryURL, {
+  const writableCallback = httpie.stream("GET", repositoryURL, {
     headers: {
       "User-Agent": "NodeSecure",
       "Accept-Encoding": "gzip, deflate",
       Authorization: typeof token === "string" ? `token ${token}` : GITHUB_TOKEN
     },
     maxRedirections: 1
-  })(createWriteStream(location));
+  });
+  await writableCallback(() => createWriteStream(location));
 
   return {
     location,
