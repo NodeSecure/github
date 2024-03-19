@@ -8,8 +8,6 @@ import { pipeline } from "node:stream/promises";
 // Import Third-party Dependencies
 import tar from "tar-fs";
 import httpie from "@myunisoft/httpie";
-import * as dotenv from "dotenv";
-dotenv.config();
 
 // CONSTANTS
 const kGithubURL = new URL("https://github.com/");
