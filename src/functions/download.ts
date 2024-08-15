@@ -37,6 +37,8 @@ export interface DownloadResult {
   repository: string;
   /** Github organization name */
   organization: string;
+  /** Github branch name */
+  branch: string;
 }
 
 /**
@@ -67,7 +69,7 @@ export async function download(
     headers: {
       "User-Agent": "NodeSecure",
       "Accept-Encoding": "gzip, deflate",
-      Authorization: `token ${token}`
+      Authorization: typeof token === "string" ? `token ${token}` : void 0
     },
     maxRedirections: 1
   });
@@ -76,6 +78,7 @@ export async function download(
   return {
     location,
     organization,
-    repository: repo
+    repository: repo,
+    branch
   };
 }
