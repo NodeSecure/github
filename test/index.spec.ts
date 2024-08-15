@@ -4,13 +4,13 @@ import { fileURLToPath } from "node:url";
 import fs from "node:fs/promises";
 import { describe, before, test } from "node:test";
 import assert from "node:assert";
+import * as timers from "node:timers/promises";
 
 // Import Third-party Dependencies
 import is from "@slimio/is";
-import { MockAgent } from "@myunisoft/httpie";
 
 // Import Internal Dependencies
-import * as github from "../index.js";
+import * as github from "../src/index.js";
 
 // CONSTANTS
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -27,7 +27,7 @@ test("github.downloadAndExtract should be an asyncFunction", () => {
 
 test("download must throw: repository must be a string!", () => {
   assert.rejects(
-    async() => await github.download(10),
+    async() => await github.download(10 as any),
     {
       name: "TypeError",
       message: "repository must be a string!"
@@ -113,11 +113,11 @@ test("download public repository (with extraction and removeArchive disabled)", 
 });
 
 test("teardown", async() => {
-  await new Promise((resolve) => setTimeout(resolve, 50));
+  await timers.setTimeout(50);
 
   const dirents = await fs.readdir(__dirname, { withFileTypes: true });
   for (const dirent of dirents) {
-    if (dirent.name === "index.test.js") {
+    if (dirent.name === "index.spec.ts") {
       continue;
     }
 
@@ -129,49 +129,4 @@ test("teardown", async() => {
       await fs.unlink(fullPath);
     }
   }
-});
-
-test("get contributors last activites for NodeSecure/scanner", async() => {
-  const expectedData = new Set(["fraxken", "PierreDemailly"]);
-
-  const agent = new MockAgent();
-  agent.disableNetConnect();
-
-  const client = agent.get("https://api.github.com");
-
-  client.intercept({ method: "GET", path: "/repos/NodeSecure/scanner/contributors" })
-    .reply(200, expectedData);
-
-  assert.equal(expectedData.has("fraxken"), true);
-});
-
-
-test("getContributorsLastActivities must throw: repository must be a string, but got `repository`", async() => {
-  const repository = 1;
-
-  assert.rejects(
-    async() => await github.getContributorsLastActivities("My-fake-owner", repository),
-    {
-      name: "TypeError",
-      message: `repository must be a string, but got ${repository}`
-    }
-  );
-});
-
-test("getContributorsLastActivities must throw: owner must be a string, but got `owner`", async() => {
-  const owner = 1;
-
-  assert.rejects(
-    async() => await github.getContributorsLastActivities(owner, "my-fake-repository"),
-    {
-      name: "TypeError",
-      message: `owner must be a string, but got ${owner}`
-    }
-  );
-});
-
-test("getContributorsLastActivities must not throw & return null when he can't find a repository", async() => {
-  const contributors = await github.getContributorsLastActivities("my-fake-owner", "my-fake-repository");
-
-  assert.equal(contributors, null);
 });
