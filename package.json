@@ -3,10 +3,13 @@
   "version": "1.2.0",
   "description": "Download repository from github",
   "type": "module",
-  "exports": "./index.js",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
-    "prepublishOnly": "pkg-ok",
-    "test": "node -r dotenv --test",
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "lint": "eslint src",
+    "test": "glob -c \"tsx --test\" \"./test/**/*.spec.ts\"",
     "coverage": "c8 -r html npm test"
   },
   "repository": {
@@ -20,8 +23,7 @@
     "archive"
   ],
   "files": [
-    "index.js",
-    "index.d.ts"
+    "dist"
   ],
   "author": "GENTILHOMME Thomas <gentilhomme.thomas@gmail.com>",
   "license": "MIT",
@@ -34,12 +36,15 @@
     "tar-fs": "^3.0.5"
   },
   "devDependencies": {
-    "@nodesecure/eslint-config": "^1.9.0",
+    "@openally/config.eslint": "^1.0.0",
+    "@openally/config.typescript": "^1.0.3",
     "@slimio/is": "^2.0.0",
+    "@types/node": "^22.3.0",
+    "@types/tar-fs": "^2.0.4",
     "c8": "^10.1.2",
-    "dotenv": "^16.0.2",
     "eslint": "^9.5.0",
-    "pkg-ok": "^3.0.0"
+    "tsx": "^4.17.0",
+    "typescript": "^5.5.4"
   },
   "engines": {
     "node": ">=18"

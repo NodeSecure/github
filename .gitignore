@@ -62,3 +62,4 @@ docs/
 temp/
 .vscode/
 jsdoc/
+dist/

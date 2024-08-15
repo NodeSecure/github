@@ -5,7 +5,6 @@
 [![OpenSSF
 Scorecard](https://api.securityscorecards.dev/projects/github.com/NodeSecure/github/badge?style=for-the-badge)](https://api.securityscorecards.dev/projects/github.com/NodeSecure/github)
 ![MIT](https://img.shields.io/github/license/NodeSecure/github.svg?style=for-the-badge)
-![known vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/NodeSecure/github?style=for-the-badge)
 ![build](https://img.shields.io/github/actions/workflow/status/NodeSecure/github/node.js.yml?style=for-the-badge)
 
 Download and (optionaly) extract github repository archive.
@@ -34,12 +33,6 @@ console.log(utils.location);
 
 const scanner = await github.downloadAndExtract("NodeSecure.scanner");
 console.log(scanner.location);
-
-const contributors = await github.getContributorsLastActivities(
-  "NodeSecure",
-  "scanner"
-);
-console.log(contributors);
 ```
 
 ## API
@@ -66,15 +59,6 @@ export interface DownloadOptions {
   token?: string;
 }
 
-export type ExtractOptions = DownloadOptions & {
-  /**
-   * Remove the tar.gz archive after a succesfull extraction
-   *
-   * @default true
-   */
-  removeArchive?: boolean;
-};
-
 export interface DownloadResult {
   /** Archive or repository location on disk */
   location: string;
@@ -84,41 +68,24 @@ export interface DownloadResult {
   organization: string;
 }
 
-export interface GetContributorsLastActivities {
-  token?: string;
-}
-
-export interface GetContributorsLastActivitiesResult {
-  [key: string]: {
-    repository: string;
-    actualRepo: boolean;
-    lastActivity: string;
-  }[];
-}
 export function download(
   repo: string,
   options?: DownloadOptions
 ): Promise<DownloadResult>;
+
+export interface DownloadExtractOptions extends DownloadOptions {
+  /**
+   * Remove the tar.gz archive after a succesfull extraction
+   *
+   * @default true
+   */
+  removeArchive?: boolean;
+}
+
 export function downloadAndExtract(
   repo: string,
-  options?: ExtractOptions
+  options?: DownloadExtractOptions
 ): Promise<DownloadResult>;
-export function getContributorsLastActivities(
-  owner: string,
-  repository: string,
-  options?: GetContributorsLastActivities
-): Promise<GetContributorsLastActivitiesResult | null>;
-export function setToken(githubToken: string): void;
-```
-
-### Private repositories
-
-To work with private repositories you can either setup a `GITHUB_TOKEN` system variable or use `setToken` method:
-
-```js
-import * as github from "@nodesecure/github";
-
-github.setToken("...");
 ```
 
 ## Contributors ✨
