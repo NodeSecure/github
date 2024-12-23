@@ -11,7 +11,7 @@ Download and (optionaly) extract github repository archive.
 
 ## Requirements
 
-- [Node.js](https://nodejs.org/en/) v18 or higher
+- [Node.js](https://nodejs.org/en/) v20 or higher
 
 ## Getting Started
 
